@@ -73,6 +73,10 @@ namespace RichTextViewLib.Wpf
             {
                 return;
             }
+            if(e.LeftButton != System.Windows.Input.MouseButtonState.Pressed)
+            {
+                OnMouseUp();
+            }
             _selectionEndPoint = e.GetPosition(_topGrid);
             var diffX = _selectionEndPoint.X - _selectionStartPoint.X;
             var diffY = _selectionEndPoint.Y - _selectionStartPoint.Y;
@@ -98,13 +102,18 @@ namespace RichTextViewLib.Wpf
 
         void RichTextView_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            OnMouseUp();
+        }
+
+        private void OnMouseUp()
+        {
             this.MouseMove -= RichTextView_MouseMove;
             var plainTextBuilder = new StringBuilder();
-            foreach(var row in _selectedRows)
+            foreach (var row in _selectedRows)
             {
                 if (row != _selectedRows.First())
                     plainTextBuilder.AppendLine();
-                foreach(var element in row.SelectedElements)
+                foreach (var element in row.SelectedElements)
                 {
                     var elementType = element.GetType();
                     IRichTextElementExtension extension;
@@ -159,6 +168,9 @@ namespace RichTextViewLib.Wpf
 
                 foreach (var element in row.Elements)
                 {
+                    var isSelectable = (bool)element.GetValue(RichTextExtensionBase.IsSelectableProperty);
+                    if (!isSelectable)
+                        continue;
                     var elementIndex = (int)element.GetValue(Grid.ColumnProperty);
                     if ((startElementIndex <= elementIndex && elementIndex <= endElementIndex) || (startElementIndex >= elementIndex && elementIndex >= endElementIndex))
                     {
@@ -246,7 +258,7 @@ namespace RichTextViewLib.Wpf
                 SetValue(Grid.RowProperty, rowIndex);
             }
 
-            public Row AddElement(int index, UIElement element)
+            public Row AddElement(int index, UIElement element, bool isSelectable = true)
             {
                 while (ColumnDefinitions.Count <= index)
                 {
@@ -254,6 +266,7 @@ namespace RichTextViewLib.Wpf
                 }
                 element.SetValue(Grid.ColumnProperty, index);
                 element.SetValue(RichTextViewRowProperty, RowIndex);
+                element.SetValue(RichTextExtensionBase.IsSelectableProperty, isSelectable);
                 Children.Add(element);
                 UpdateElements();
                 return this;
@@ -283,6 +296,26 @@ namespace RichTextViewLib.Wpf
 
             public UIElement[] SelectedElements { get { return Elements.Where(e => (bool)e.GetValue(RichTextExtensionBase.IsSelectedProperty)).ToArray(); } }
 
+            public bool IsVisible
+            {
+                get { return this.Visibility == Visibility.Visible; }
+                set
+                {
+                    if (IsVisible == value)
+                        return;
+                    this.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+
+            public void Show()
+            {
+                IsVisible = true;
+            }
+
+            public void Hide()
+            {
+                IsVisible = false;
+            }
         }
 
         public interface IRichTextElementExtension
@@ -401,6 +434,23 @@ namespace RichTextViewLib.Wpf
 
             public static readonly DependencyProperty IsSelectedProperty =
                 DependencyProperty.RegisterAttached("IsSelected", typeof(bool), typeof(RichTextExtensionBase), new PropertyMetadata(false));
+
+
+
+
+            public static bool GetIsSelectable(DependencyObject obj)
+            {
+                return (bool)obj.GetValue(IsSelectableProperty);
+            }
+
+            public static void SetIsSelectable(DependencyObject obj, bool value)
+            {
+                obj.SetValue(IsSelectableProperty, value);
+            }
+
+            public static readonly DependencyProperty IsSelectableProperty =
+                DependencyProperty.RegisterAttached("IsSelectable", typeof(bool), typeof(RichTextExtensionBase), new PropertyMetadata(true));
+
 
         }
 

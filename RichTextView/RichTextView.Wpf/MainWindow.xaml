@@ -10,7 +10,10 @@
         </Grid.RowDefinitions>
         <local:RichTextView x:Name="rtv" Background="AliceBlue" />
         <Grid Grid.Row="1" Background="Yellow">
-            <TextBlock x:Name="plainText"/>
+            <StackPanel Orientation="Vertical">
+                <TextBlock x:Name="plainText"/>
+                <Button x:Name="btn" Content="Collapse/Expand"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
