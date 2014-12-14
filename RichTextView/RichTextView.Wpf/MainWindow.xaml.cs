@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace RichTextView.Wpf
+namespace RichTextViewLib.Wpf
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,6 +23,19 @@ namespace RichTextView.Wpf
         public MainWindow()
         {
             InitializeComponent();
+            rtv.AddRow()
+                .AddElement(0, new TextBlock { Text = "FirstTextRow1", Foreground = new SolidColorBrush(Colors.Blue), FontFamily = new FontFamily("Courier New"), Cursor = Cursors.IBeam })
+                .AddElement(1, new TextBlock { Text = "SecTextFirstRow", Foreground = new SolidColorBrush(Colors.Red), FontFamily = new FontFamily("Courier New"), Cursor = Cursors.IBeam });
+            rtv.AddRow()
+                .AddElement(0, new TextBlock { Text = "FirstTextSecondRow", Foreground = new SolidColorBrush(Colors.Blue), FontFamily = new FontFamily("Courier New"), Cursor = Cursors.IBeam })
+                .AddElement(1, new TextBlock { Text = "SecTextRow2", Foreground = new SolidColorBrush(Colors.Red), FontFamily = new FontFamily("Courier New"), Cursor = Cursors.IBeam });
+
+            rtv.SelectionChanged += rtv_SelectionChanged;
+        }
+
+        void rtv_SelectionChanged(object sender, EventArgs e)
+        {
+            plainText.Text = rtv.SelectionPlainText;
         }
     }
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RichTextView.Wpf", "RichTextView.Wpf\RichTextView.Wpf.csproj", "{123B812A-F40F-402D-979F-DE300FEF430C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RichTextViewLib.Wpf", "RichTextView.Wpf\RichTextViewLib.Wpf.csproj", "{123B812A-F40F-402D-979F-DE300FEF430C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
